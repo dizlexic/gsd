@@ -6,6 +6,7 @@ const types = {
     media: MediaSquirrel,
 }
 export default function createFromEvent(event) {
-    const squirrel = types[event?.type] ?? GenericSquirrel;
+    const type = event?.type ?? 'generic';
+    const squirrel = types[type] ?? GenericSquirrel;
     return new squirrel(event);
 }

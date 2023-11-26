@@ -8,10 +8,18 @@ const opts = dotenv.config({
 
 const client = createClient({ host: opts.REDIS_HOST,
                                                                                  port: opts.REDIS_PORT, })
-
 client.subscribe('laravel_database_gsd', (event) => {
-    let task = squirrelEvent(event);
-    const result = Promise.resolve(task.save().then(() => task.run()));
+    try {
+        let task = squirrelEvent(event);
+        return new Promise((resolve, reject) => {
+            task.save()
+                .then((event) => resolve(event.run()))
+                .catch(err => reject(err))
+        })
+    } catch (e) {
+        console.log('Redis Client Subscribe Err', e)
+    }
+
 })
 
 client.on('error', err => console.log('Redis Client Err', err))
