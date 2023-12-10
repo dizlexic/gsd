@@ -1,4 +1,4 @@
-import logger from "./logger.js";
+import logger from "../../shared/logger.js";
 import xhttp from "./xhttp.js";
 import parsers from "../parsers/export.js";
 import { delay, delayRandom } from './util.js';
@@ -27,7 +27,7 @@ class Squirrel {
         }
         await this.save();
     }
-    
+
     async save(tries=0) {
         if(tries > 0){//5) {
             // Throw and log some shit
@@ -44,7 +44,7 @@ class Squirrel {
             await delay(this.conf.xhttp.delayRange.min)
             await this.save(tries++)
         }
-        
+
         console.log(res)
     }
 }

@@ -1,1 +1,1 @@
-export { Squirrel } from '../Squirrel.js'
+export { Squirrel } from '../shared/Squirrel.js'

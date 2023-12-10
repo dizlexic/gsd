@@ -7,9 +7,7 @@ const xhttp = (token)=>{
         'Content-Type': 'application/json',
     }
 
-    if(token){
-        headers['Authorization'] = `Bearer ${token}`
-    }
+    if(token) headers['Authorization'] = `Bearer ${token}`
 
     return axios.create({
         baseURL: config.url,

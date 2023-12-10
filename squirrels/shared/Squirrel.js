@@ -1,13 +1,16 @@
-import xhttp from '../shared/xhttp.js'
+import xhttp from '../../shared/xhttp.js'
 
 export class Squirrel
 {
     token = null;
     axios = null;
     name = 'Squirrel';
-    constructor(token) {
+    dispatcher = null;
+
+    constructor(token, dispatcher = null) {
         this.token = token;
         this.axios = xhttp(token);
+        this.dispatcher = dispatcher;
     }
 
     async run() {

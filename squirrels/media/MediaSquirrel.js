@@ -1,5 +1,5 @@
 import xhttp from '../../shared/xhttp.js'
-import Squirrel from '../Squirrel.js'
+import Squirrel from '../shared/Squirrel.js'
 import got from 'got';
 
 export default class MediaSquirrel extends Squirrel {
@@ -10,14 +10,18 @@ export default class MediaSquirrel extends Squirrel {
 
     async run() {
         console.log('Media Squirrel from index.js running')
-        const list = await this.getList()
-        console.log('Media Squirrel list', list.length)
-        if(!list.length) {
-            throw new Error('No media to save')
+        let list = []
+
+        try {
+            list = await this.getList()
+        } catch (e) {
+            console.log('no media to save')
+            return
         }
 
         const media = await this.save(list)
     }
+
 
     async save(list) {
         for (const media of list) {
@@ -47,6 +51,14 @@ export default class MediaSquirrel extends Squirrel {
     }
     async getList() {
         const { media } = this.axios.get('api/media/unsaved/20')
-        return media || []
+        const list = media || []
+
+        console.log('Media Squirrel list', list.length)
+
+        if(!list.length) {
+            throw new Error('No media to save')
+        }
+
+        return list
     }
 }

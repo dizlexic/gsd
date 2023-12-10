@@ -3,15 +3,18 @@ import { GSDispatcher } from './lib/GSDispatcher.js'
 import * as dotenv from 'dotenv'
 
 const opts = dotenv.config({
-  path: './.env',
-}).parsed;
+                               path: './.env',
+                           }).parsed;
 
-const client = createClient({ host: opts.REDIS_HOST,
-                                                                                 port: opts.REDIS_PORT, })
+const client = createClient({
+                                host: opts.REDIS_HOST,
+                                port: opts.REDIS_PORT, })
+
 client.subscribe('laravel_database_gsd', (event) => {
     try {
+        const data = JSON.parse(event)
         return new Promise((resolve, reject) => {
-            const dispatcher = new GSDispatcher(event)
+            const dispatcher = new GSDispatcher(data)
             dispatcher.dispatch()
                 .then(() => {
                     resolve()
@@ -27,10 +30,14 @@ client.subscribe('laravel_database_gsd', (event) => {
     }
 })
 
-client.on('error', err => new GSDispatcher().updateStatus('error', err))
+client.on('error', err => new GSDispatcher({
+                                               status: 'error'
+                                           }).updateStatus('error', err))
 
 client.on( 'connect', async () => {
-    new GSDispatcher().updateStatus('connected')
+   await new GSDispatcher({
+                         status: 'information',
+                     }).updateStatus('connected')
 })
 
 await client.connect()
