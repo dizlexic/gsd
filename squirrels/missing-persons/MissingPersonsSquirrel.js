@@ -4,11 +4,9 @@ import { parser } from './parser.js';
 import xhttp from 'shared/xhttp.js';
 
 
-export class MissingPersonsSquirrel extends Squirrel {
-    constructor (token) {
-        super(token)
-        this.name = 'MissingPersonsSquirrel'
-    }
+export class MissingPersonsSquirrel extends Squirrel
+{
+    xhttp = xhttp();
 
     async run() {
         const data = await this.getData()
@@ -16,25 +14,22 @@ export class MissingPersonsSquirrel extends Squirrel {
     }
 
     async getData(tries= 0) {
-        const { body } = axios.get(this.conf.opts.MISSING_URL)
+        const { body } = this.xhttp.get(process.env.MISSING_PERSONS_URL)
             .catch(err=>logger.error(err))
-        if (body) return body
-        if (tries > 2) return null
+        if (body)
+            return body
+        if (tries > 2)
+            return null
         await delayRandom(this.conf.xhttp.delayRange)
         return await this.getData(tries++)
     }
 
     async save(tries=0) {
-        // TODO - this is a mess
-        // first at least update tries count after test
-        if (tries > 0) {
-            // Throw and log some shit
-            logger.error('Save Error')
-            return; //:(
-        }
-        xhttp.baseURL = `${this.conf.opts.APP_URL}:${this.conf.opts.APP_PORT}/`
+        if (tries > 0) return;
 
-        const url = `${this.conf.opts.MISSING_WEBHOOK}`
+        xhttp.baseURL = `${process.env.APP_URL}:${process.env.APP_PORT}/`
+
+        const url = `${process.env.MISSING_WEBHOOK}`
 
         const data = this.list
 

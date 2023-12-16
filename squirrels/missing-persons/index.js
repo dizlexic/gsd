@@ -1,6 +1,7 @@
-import MissingPersonsSquirrel from './MissingPersonsSquirrel.js'
+import MissingPersonsSquirrel from './MissingPersonsSquirrel.js';
 
-export function Squirrel (token) {
-    return new MissingPersonsSquirrel(token)
+
+export function Squirrel (dispatchedEvent) {
+    return new MissingPersonsSquirrel(dispatchedEvent);
 }
 

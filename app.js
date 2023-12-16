@@ -19,7 +19,7 @@ client.subscribe(opts.IN_CHANNEL, (data) => {
             resolve();
         } catch (e) {
             console.log("Redis Client Subscribe Err", e);
-            reject(e);
+            resolve();
         }
     });
 });
