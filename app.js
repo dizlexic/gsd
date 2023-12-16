@@ -1,6 +1,6 @@
-import { createClient } from "redis";
-import { GSDispatcher } from "./lib/GSDispatcher.js";
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
+import { createClient } from 'redis';
+import { DispatchedEvent } from './lib/DispatchedEvent.js';
 
 const opts = dotenv.config({
     path: "./.env",
@@ -11,37 +11,32 @@ const client = createClient({
     port: opts.REDIS_PORT,
 });
 
-client.subscribe("laravel_database_gsd", (event) => {
-    try {
-        const data = JSON.parse(event);
-        return new Promise((resolve, reject) => {
-            const dispatcher = new GSDispatcher(data);
-            dispatcher
-                .dispatch()
-                .then(() => {
-                    resolve();
-                    dispatcher.updateStatus("success");
-                })
-                .catch((err) => {
-                    console.log("GSDispatcher Err", err);
-                    resolve(); // idk k maybe?
-                });
-        });
-    } catch (e) {
-        console.log("Redis Client Subscribe Err", e);
-    }
+client.subscribe(opts.IN_CHANNEL, (data) => {
+    const event = new DispatchedEvent(data);
+    return new Promise(async (resolve, reject) => {
+        try {
+            await event.run().then(() => event.save());
+            resolve();
+        } catch (e) {
+            console.log("Redis Client Subscribe Err", e);
+            reject(e);
+        }
+    });
 });
 
-client.on("error", (err) =>
-    new GSDispatcher({
-        status: "error",
-    }).updateStatus("error", err),
-);
+client.on("error", (err) => {
+    console.log('Redis Client Error', err);
+    // TODO:
+    // new GSDispatcher({
+    //     status: "error",
+    // }).updateStatus("error", err),
+});
 
 client.on("connect", async () => {
-    await new GSDispatcher({
-        status: "information",
-    }).updateStatus("connected");
+    // TODO:
+    // await new GSDispatcher({
+    //     status: "information",
+    // }).updateStatus("connected");
 });
 
 await client.connect().catch((err) => console.log("Redis Client Connect Err", err));

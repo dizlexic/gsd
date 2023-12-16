@@ -1,6 +1,7 @@
-import TestSquirrel from './TestSquirrel.js'
+import TestSquirrel from './TestSquirrel.js';
 
-export function Squirrel (token, disptacher) {
-    return new TestSquirrel(token, disptacher)
+
+export function Squirrel (dispatchedEvent) {
+    return new TestSquirrel(dispatchedEvent)
 }
 

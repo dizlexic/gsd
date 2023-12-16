@@ -1,13 +1,14 @@
-import axios from 'axios'
-import { config } from '../config.js'
+import axios from 'axios';
+import { config } from '../config.js';
 
-const xhttp = (token)=>{
+const xhttp = (token = null)=>{
 
     const headers = {
         'Content-Type': 'application/json',
     }
 
-    if(token) headers['Authorization'] = `Bearer ${token}`
+    if(token)
+        headers['Authorization'] = `Bearer ${token}`
 
     return axios.create({
         baseURL: config.url,

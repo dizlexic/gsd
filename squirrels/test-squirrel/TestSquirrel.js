@@ -1,25 +1,16 @@
-import Squirrel from '../shared/Squirrel.js'
-import { delay } from '../shared/util.js'
+import Squirrel from '../shared/Squirrel.js';
+import { delay } from '../shared/util.js';
+
 export default class TestSquirrel extends Squirrel {
-    constructor (token, dispatcher) {
-        super(token, dispatcher)
-        this.name = 'TestSquirrel'
-    }
-
-
     async run() {
-        console.log('TestSquirrel running');
-        let status = await this.dispatcher.updateStatus('running')
-
+        console.log('running')
         await delay(1000)
-
-        await this.save()
+        console.log('ran')
     }
 
     async save() {
-        console.log('TestSquirrel saving');
-        await this.dispatcher.updateStatus('saving')
+        console.log('saving')
         await delay(1000)
-        await this.dispatcher.updateStatus('done')
+        console.log('saved')
     }
 }

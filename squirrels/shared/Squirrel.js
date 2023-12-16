@@ -1,16 +1,26 @@
-import xhttp from '../../shared/xhttp.js'
+import xhttp from '../../shared/xhttp.js';
+
 
 export class Squirrel
 {
-    token = null;
-    axios = null;
-    name = 'Squirrel';
-    dispatcher = null;
+    _axios = null
+    _task = null
 
-    constructor(token, dispatcher = null) {
-        this.token = token;
-        this.axios = xhttp(token);
-        this.dispatcher = dispatcher;
+    constructor(dispatchedEvent) {
+        this._task = dispatchedEvent
+        this._axios = xhttp(this.token);
+    }
+
+    get token() {
+        return this._task?.token;
+    }
+
+    get dispatcher() {
+        return this._task?.dispatcher;
+    }
+
+    get event() {
+        return this._task?.event;
     }
 
     async run() {
