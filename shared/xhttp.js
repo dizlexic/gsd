@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from '../config.js';
 
-const xhttp = (token = null)=>{
+export const xhttp = (token = null)=>{
 
     const headers = {
         'Content-Type': 'application/json',

@@ -1,7 +1,8 @@
-import * as cheerio from "cheerio";
-import { parser as base } from '../shared/parser.js';
+import * as cheerio from 'cheerio';
+import { Parser as base } from '../shared/parser.js';
 
-export default class Parser extends base {
+
+export class Parser extends base {
     constructor() {
         super()
     }
@@ -65,4 +66,4 @@ export default class Parser extends base {
     }
 }
 
-
+export default Parser;

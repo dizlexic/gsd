@@ -16,11 +16,10 @@ client.subscribe(opts.IN_CHANNEL, (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             await event.run().then(() => event.save());
-            resolve();
         } catch (e) {
             console.log("Redis Client Subscribe Err", e);
-            resolve();
         }
+        resolve(true);
     });
 });
 

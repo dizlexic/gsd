@@ -1,15 +1,17 @@
-import logger from "../../shared/logger.js";
-import xhttp from "./xhttp.js";
-import parsers from "../parsers/export.js";
+import logger from '../../shared/logger.js';
+import xhttp from './xhttp.js';
+import parsers from '../parsers/export.js';
 import { delay, delayRandom } from './util.js';
+
+
 class Squirrel {
     logger = logger;
-    conf;
     xhttp;
+    _task;
     targets;
     list = [];
-    constructor(conf) {
-        this.conf = conf;
+    constructor(dispatchedEvent) {
+        this._task = dispatchedEvent;
         this.type = conf.args.length > 0 ? conf.args[0] : "missing";
         this.targets = this.conf.targets[this.type].targets;
         this.parser = new parsers[this.type]();

@@ -1,4 +1,4 @@
-export default class Parser {
+export class Parser {
     constructor() {}
 
     async parse(data, list = true) {
@@ -17,3 +17,5 @@ export default class Parser {
         throw new Error("Not implemented");
     }
 }
+
+export default Parser;
