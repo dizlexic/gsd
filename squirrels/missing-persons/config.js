@@ -8,7 +8,7 @@ const missingTemplate = (adult = true) => {
 export const config = {
     targets: [missingTemplate(true), missingTemplate(false)],
     template: missingTemplate,
-    delayRange: { min: 500, max: 1000 },
+    delayRange: { min: 10000, max: 15000 },
 };
 
 export default config;

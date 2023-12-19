@@ -1,5 +1,5 @@
 import { Squirrel } from '../shared/Squirrel.js';
-import { delay, delayRandom, getFile, TMP_DIR } from '../shared/util.js';
+import { delay } from '../shared/util.js';
 import { config } from './config.js';
 import { Parser } from './parser.js';
 
@@ -46,25 +46,25 @@ export class MissingPersonsSquirrel extends Squirrel
 
         task.data.missing = missing
 
-        for (const person in missing) {
-            const pic_url = person?.photo
-            const poster_url = person?.poster
-            const filename = person?.filename
-            const tmp = await TMP_DIR()
-
-            if (pic_url) {
-                const file_ext = pic_url.split('.').pop()
-                const file = await getFile(
-                    pic_url,
-                    `${tmp}/${filename}_photo.${file_ext}`
-                ).then(()=>{
-
-                })
-            }
-
-
-            await delayRandom(...config.delayRange)
-        }
+        // for (const person in missing) {
+        //     const pic_url = person?.photo
+        //     const poster_url = person?.poster
+        //     const filename = person?.filename
+        //     const tmp = await TMP_DIR()
+        //
+        //     if (pic_url) {
+        //         const file_ext = pic_url.split('.').pop()
+        //         const file = await getFile(
+        //             pic_url,
+        //             `${tmp}/${filename}_photo.${file_ext}`
+        //         ).then(()=>{
+        //
+        //         })
+        //     }
+        //
+        //
+        //     await delayRandom(config.delayRange.min, config.delayRange.max)
+        // }
 
         const res = await xhttp.post(url.href, task, {})
             .catch(err=>console.log('error posting', err, Object.keys(task)))
@@ -73,7 +73,7 @@ export class MissingPersonsSquirrel extends Squirrel
             await delay(this.config.delayRange.min)
             console.log('Failed with code', res?.statusCode)
             console.log('and message', res?.statusMessage)
-            return await this.save(++tries)
+            return await this.save(tries++)
         }
 
         console.log('Save complete')

@@ -1,5 +1,4 @@
 import Squirrel from '../shared/Squirrel.js';
-import { delayRandom } from 'squirrels/shared/util.js';
 
 
 export default class MediaSquirrel extends Squirrel {
@@ -17,20 +16,19 @@ export default class MediaSquirrel extends Squirrel {
         const length = missing.length;
         console.log('Media Squirrel: missing files', length)
 
-        while(missing.length > 0) {
-            const missing_person = missing.pop();
-            console.log('Media Squirrel: missing file', file)
-            await delayRandom(...this.config.delayRange)
-
-            const file = {
-                person: missing_person,
-                type: 'photo',
-                url: missing_person?.photo,
-            }
-
-
-            await this.download(file);
-        }
+        // while(missing.length > 0) {
+        //     const missing_person = missing.pop();
+        //     console.log('Media Squirrel: missing file', file)
+        //     await delayRandom(this.config.delayRange.min, this.config.delayRange.max)
+        //
+        //     const file = {
+        //         person: missing_person,
+        //         type: 'photo',
+        //         url: missing_person?.photo,
+        //     }
+        //
+        //     await this.download(file);
+        // }
     }
 
     async download(file)

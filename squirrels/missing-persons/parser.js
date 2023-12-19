@@ -11,23 +11,34 @@ export class Parser extends base {
         return this.detail(data);
     }
 
-    createRecord($, element) {
+    //            h>Rec#</th>\n' +
+    // '        <th>Photo</th>\n' +
+    // '        <th>Name</th>\n' +
+    // '        <th>&nbsp;&nbsp;&nbsp;Gender&nbsp;&nbsp;&nbsp;</th>\n' +
+    // '        <th>&nbsp;&nbsp;&nbsp;Race&nbsp;&nbsp;&nbsp;</th>\n' +
+    // '        <th>Missing Since</th>\n' +
+    // '        <th>Date of Birth</th>\n' +
+    // '        <th>Investigating Agency</th>\n' +
+    // '         <th>Missing From</th>\n' +
+    // '        <th>Type</th>\n' +
+    // '        <th>Poster</th>\n' +
+    createRecord($, element, names) {
         let record = {};
-        try {
-            record.number = $(element[0])?.text();
-            record.photo = $(element[1])?.find("img").attr("src");
-            record.name = $(element[2])?.text();
-            record.gender = $(element[3])?.text();
-            record.race = $(element[4])?.text();
-            record.missing_since = $(element[5])?.text();
-            record.dob = $(element[6])?.text();
-            record.investigative_agency = $(element[7])?.text();
-            record.missing_from = $(element[8])?.text();
-            record.classification = $(element[9])?.text();
-            record.poster = $(element[10]).find("a")?.attr("href");
-        } catch (e) {
-            return (record.error = e);
+
+        for (const index in names) {
+            let name = names[index];
+            name = name.trim();
+            name = name.toLowerCase().replace(/\s/g, "_");
+
+            if (name === "photo" || name === "poster") {
+                record[name] = $(element[index]).find("img").attr("src");
+                continue;
+            }
+
+            record[name] = $(element[index]).text();
         }
+
+
 
         return this.formatRow(record);
     }
@@ -41,7 +52,13 @@ export class Parser extends base {
             if (typeof row[key] === "string") {
                 row[key] = row[key].replace(/[\t\n\r\f\v]/g, "");
                 row[key] = row[key].trim();
+
+                if (row[key] === "") {
+                    row[key] = null;
+                }
             }
+
+
         }
 
         return row;
@@ -50,13 +67,20 @@ export class Parser extends base {
     async list(data) {
         let out = [];
         const $ = cheerio.load(data);
+
+        const headers = $("div#missingPersonsAll table#example thead tr th");
+        const headerNames = [];
+        for (const header of headers) {
+            headerNames.push($(header).text());
+        }
+
         const rows = $("div#missingPersonsAll table#example tbody tr");
         for (const row of rows) {
             const cols = $(row).find("td");
             if (cols.length < 2) continue;
-            const record = this.createRecord($, cols);
-            console.log(record);
+            const record = this.createRecord($, cols, headerNames);
             out.push(record);
+            console.log(JSON.stringify(record, null, 2))
         }
         return out;
     }
