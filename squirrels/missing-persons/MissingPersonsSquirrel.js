@@ -27,7 +27,7 @@ export class MissingPersonsSquirrel extends Squirrel
         // hackey af and maybe not even needed
         const instance = await import('../../shared/xhttp.js')
         const xhttp = instance.default(this.token);
-        const url = new URL(`${process.env.APP_URL}:${process.env.APP_PORT}/${process.env.MISSING_WEBHOOK}`);
+        const url = new URL(`${config.api.url}:${config.api.port}/${config.api.hook}`);
 
         const task = {...this._task}
         delete task._manager
