@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { Parser as base } from '../shared/parser.js';
+import { Parser as base } from '../../lib/Parser.js';
 
 
 export class Parser extends base {
@@ -11,17 +11,6 @@ export class Parser extends base {
         return this.detail(data);
     }
 
-    //            h>Rec#</th>\n' +
-    // '        <th>Photo</th>\n' +
-    // '        <th>Name</th>\n' +
-    // '        <th>&nbsp;&nbsp;&nbsp;Gender&nbsp;&nbsp;&nbsp;</th>\n' +
-    // '        <th>&nbsp;&nbsp;&nbsp;Race&nbsp;&nbsp;&nbsp;</th>\n' +
-    // '        <th>Missing Since</th>\n' +
-    // '        <th>Date of Birth</th>\n' +
-    // '        <th>Investigating Agency</th>\n' +
-    // '         <th>Missing From</th>\n' +
-    // '        <th>Type</th>\n' +
-    // '        <th>Poster</th>\n' +
     createRecord($, element, names) {
         let record = {};
 

@@ -1,6 +1,7 @@
 import { createClient } from 'redis';
 import { DispatchedEvent } from './lib/DispatchedEvent.js';
 import { config } from './config.js';
+import { instance as dispatcher } from 'lib/GSDispatcher.js';
 
 const opts = {}
 
@@ -17,33 +18,27 @@ const client = createClient(opts);
 // Subscribe to the in channel
 client.subscribe(config.redis.in_channel, (data) => {
     const event = new DispatchedEvent(data);
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
         try {
             await event.run().then(() => event.save());
         } catch (e) {
             console.log("Redis Client Subscribe Err", e);
-            reject(e);
+            resolve(false);
         }
         resolve(true);
     });
 });
 
 // Setup error update handler
-client.on("error", (err) => {
-    console.log('Redis Client Error', err);
-    // TODO:
-    // new GSDispatcher({
-    //     status: "error",
-    // }).updateStatus("error", err),
+client.on('error', async (err) => {
+    console.log('error', err);
+    await dispatcher.updateStatus('error', err);
 });
 
 // Setup connect update handler
 client.on("connect", async () => {
     console.log('Redis Client Connected');
-    // TODO:
-    // await new GSDispatcher({
-    //     status: "information",
-    // }).updateStatus("connected");
+    await dispatcher.updateStatus('ready', 'ready');
 });
 
 // Connect to the redis server

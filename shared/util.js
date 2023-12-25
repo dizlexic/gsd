@@ -40,7 +40,7 @@ export const delayRandom = async (min, max) => {
  * @param token - optional API bearer token
  * @returns {Promise<any>}
  */
-export async const streamToApi= (target, endpoint, data= {}, token= null) => {
+export const streamToApi = async (target, endpoint, data = {}, token = null) => {
     const form = new FormData();
     const target_url = new URL(target);
     const endpoint_url = new URL(endpoint);
@@ -89,3 +89,60 @@ export async const streamToApi= (target, endpoint, data= {}, token= null) => {
     });
 }
 
+/**
+ * Clear the temp folder
+ * @type {function(): Promise<void>}
+ * @async
+ * @throws {Error}
+ * @returns {Promise<void>}
+ */
+export const clearTempFolder = async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const tempDir = path.join(__dirname, '../temp');
+
+    fs.readdir(tempDir, (err, files) => {
+        if (err) throw err;
+
+        for (const file of files) {
+            if (file === '.gitignore') continue;
+            fs.unlink(path.join(tempDir, file), err => {
+                if (err) throw err;
+            });
+        }
+    });
+};
+
+/**
+ * Send a heartbeat to the API
+ * @param to
+ * @param data
+ * @param token
+ * @returns {Promise<boolean>}
+ */
+export const sendHeartBeat = async (to, data, token = null) => {
+    const target = new URL(to);
+    const req_method = await import(target.protocol === 'https:' ? 'https' : 'http');
+
+    const options = {
+        method: 'GET', headers: {
+            'Content-Type': 'application/json', 'User-Agent': 'Squirrel/1.0.0',
+        },
+    };
+
+    if (token) options.headers['Authorization'] = `Bearer ${token}`;
+
+    return new Promise((resolve) => {
+        try {
+            req_method.request(target, options, (res, err) => {
+                if (err) resolve(false);
+                res.on('close', () => {
+                    resolve(true);
+                });
+            });
+        } catch (e) {
+            resolve(false);
+        }
+    });
+
+};

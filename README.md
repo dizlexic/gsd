@@ -17,3 +17,5 @@ redis queue performing tasks and dispatching the results to a webhook.
 2. Copy `.env.example` to `.env`
 3. Install node dependencies: `npm i`
 4. Build assets: `npm run dev`
+
+> Check out /squirrels/generic for a basic squirrel (scraper) example
