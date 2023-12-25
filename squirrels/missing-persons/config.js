@@ -1,3 +1,5 @@
+import { config as base } from '../../config.js';
+
 process.env.MISSING_PERSONS_URL = "https://www.mshp.dps.missouri.gov/CJ51/Search?page=1&county=&personType=A";
 
 const missingTemplate = (adult = true) => {
@@ -6,6 +8,7 @@ const missingTemplate = (adult = true) => {
     }`;
 };
 export const config = {
+    ...base,
     targets: [missingTemplate(true), missingTemplate(false)],
     template: missingTemplate,
     delayRange: { min: 10000, max: 15000 },

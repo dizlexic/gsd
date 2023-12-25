@@ -1,5 +1,5 @@
-import { delayRandom } from '../shared/util.js';
-import Squirrel from '../shared/Squirrel.js';
+import { delayRandom } from '../../shared/util.js';
+import Squirrel from '../../lib/Squirrel.js';
 import { config } from './config.js';
 import FormData from 'form-data';
 import * as https from 'https';

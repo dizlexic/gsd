@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { config } from '../config.js';
 
+/**
+ * xhttp - A axios instance for making requests to the API
+ * @type {AxiosInstance}
+ *
+ * @param token
+ * @returns {AxiosInstance}
+ */
 export const xhttp = (token = null)=>{
 
     const headers = {

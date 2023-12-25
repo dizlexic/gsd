@@ -1,4 +1,9 @@
+import { config as base } from '../../config.js';
+
 export const config = {
+
+    ...base, // Spread the base config
+
     delayRange: {
         min: process.env?.DELAYRANGE_MIN || 10000,
         max: process.env?.DELAYRANGE_MIN || 20000,

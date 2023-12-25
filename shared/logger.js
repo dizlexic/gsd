@@ -1,3 +1,9 @@
+/**
+ * @file logger.js
+ * @description Simple logger with file output
+ * @version 1.0.0
+ * @type {{_writeLog: ((function(*): Promise<void>)|*), debug: logger.debug, logLevel: string, logPath: string, _format: (function(*): string), error: logger.error, writeFile: boolean, info: logger.info}}
+ */
 const logger = {
     writeFile: false,
     logLevel: "info",

@@ -1,5 +1,5 @@
-import { Squirrel } from '../shared/Squirrel.js';
-import { delay } from '../shared/util.js';
+import { Squirrel } from '../../lib/Squirrel.js';
+import { delay } from '../../shared/util.js';
 import { config } from './config.js';
 import { Parser } from './parser.js';
 

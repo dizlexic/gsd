@@ -1,28 +1,34 @@
-import * as dotenv from 'dotenv';
 import { createClient } from 'redis';
 import { DispatchedEvent } from './lib/DispatchedEvent.js';
+import { config } from './config.js';
 
-const opts = dotenv.config({
-    path: "./.env",
-}).parsed;
+const opts = {}
 
-const client = createClient({
-    host: opts.REDIS_HOST,
-    port: opts.REDIS_PORT,
-});
+opts.host = config.redis.host;
+opts.port = config.redis.port;
 
-client.subscribe(opts.IN_CHANNEL, (data) => {
+if (config.redis.password) {
+    opts.password = config.redis.password;
+}
+
+// Create a redis client
+const client = createClient(opts);
+
+// Subscribe to the in channel
+client.subscribe(config.redis.in_channel, (data) => {
     const event = new DispatchedEvent(data);
     return new Promise(async (resolve, reject) => {
         try {
             await event.run().then(() => event.save());
         } catch (e) {
             console.log("Redis Client Subscribe Err", e);
+            reject(e);
         }
         resolve(true);
     });
 });
 
+// Setup error update handler
 client.on("error", (err) => {
     console.log('Redis Client Error', err);
     // TODO:
@@ -31,13 +37,21 @@ client.on("error", (err) => {
     // }).updateStatus("error", err),
 });
 
+// Setup connect update handler
 client.on("connect", async () => {
+    console.log('Redis Client Connected');
     // TODO:
     // await new GSDispatcher({
     //     status: "information",
     // }).updateStatus("connected");
 });
 
-await client.connect().catch((err) => console.log("Redis Client Connect Err", err));
+// Connect to the redis server
+try {
+    await client.connect();
+} catch (e) {
+    console.log("Redis Client Connect Err", e);
+}
 
+// Export the client
 export default client;

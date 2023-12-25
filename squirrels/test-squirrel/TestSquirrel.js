@@ -1,5 +1,5 @@
-import Squirrel from '../shared/Squirrel.js';
-import { delay } from '../shared/util.js';
+import Squirrel from '../../lib/Squirrel.js';
+import { delay } from '../../shared/util.js';
 
 export default class TestSquirrel extends Squirrel {
     async run() {
