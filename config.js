@@ -5,7 +5,13 @@ export const env = dotenv.config({
 });
 
 export const config = {
-    url: process.env.API_URL,
+    dev_mode: (() => {
+        const is_prod = process.env.NODE_ENV !== 'production' || process.env.NODE_ENV !== 'staging';
+        const is_dev_mode = process.env?.DEV_MODE === 'true';
+        return is_prod && is_dev_mode;
+    })(),
+
+    url: process.env?.API_URL,
     port: process.env?.API_PORT ?? 80,
 
     headers: {
