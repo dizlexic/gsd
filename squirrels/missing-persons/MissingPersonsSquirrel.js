@@ -46,28 +46,8 @@ export class MissingPersonsSquirrel extends Squirrel
 
         task.data.missing = missing
 
-        // for (const person in missing) {
-        //     const pic_url = person?.photo
-        //     const poster_url = person?.poster
-        //     const filename = person?.filename
-        //     const tmp = await TMP_DIR()
-        //
-        //     if (pic_url) {
-        //         const file_ext = pic_url.split('.').pop()
-        //         const file = await getFile(
-        //             pic_url,
-        //             `${tmp}/${filename}_photo.${file_ext}`
-        //         ).then(()=>{
-        //
-        //         })
-        //     }
-        //
-        //
-        //     await delayRandom(config.delayRange.min, config.delayRange.max)
-        // }
-
         const res = await xhttp.post(url.href, task, {})
-            .catch(err=>console.log('error posting', err, Object.keys(task)))
+            .catch(err=>console.log('error posting', Object.keys(task), task.token))
 
         if (res?.statusCode < 200 || res?.statusCode > 299) {
             await delay(this.config.delayRange.min)

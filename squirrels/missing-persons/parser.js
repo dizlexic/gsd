@@ -3,12 +3,14 @@ import { Parser as base } from '../../lib/Parser.js';
 
 
 export class Parser extends base {
+
     constructor() {
         super()
     }
+
     async parse(data, list = true) {
         if (list) return await this.list(data);
-        return this.detail(data);
+        return await this.detail(data);
     }
 
     createRecord($, element, names) {
@@ -18,42 +20,71 @@ export class Parser extends base {
             let name = names[index];
             name = name.trim();
             name = name.toLowerCase().replace(/\s/g, "_");
+            record[name] = null;
 
             if (name === "photo" || name === "poster") {
-                record[name] = $(element[index]).find("img").attr("src");
-                continue;
+
+                const src = "photo" === name
+                    ? $(element[index]).find("img")?.attr("src")
+                    : $(element[index]).find("a")?.attr("href");
+
+                try {
+                    const url = new URL(src, 'https://www.mshp.dps.missouri.gov/');
+                    if (src === undefined) {
+                        record[name] = null;
+                        continue;
+                    }
+
+                    if (url.pathname.split('/').includes('CJ51')) {
+                        record[name] = null;
+                        continue
+                    }
+
+                    if (url.pathname !== "/") {
+                        record[name] = url.href
+                        continue;
+                    }
+                }
+                catch (e) {
+                    console.log(e)
+                    continue;
+                }
             }
 
-            record[name] = $(element[index]).text();
+            const text = $(element[index])?.text()?.trim() ?? null;
+            record[name] = text.length ? text : null;
         }
 
-
-
+        console.log(JSON.stringify(record, null, 2))
         return this.formatRow(record);
     }
 
+
+    /**
+     * Remove whitespace from a string
+     * @param str
+     * @returns {string}
+     */
+    sanitize(str) {
+        return str.replace(/[\t\n\r\f\v]/g, "").trim();
+    }
     formatRow(row) {
         for (const key in row) {
             if (row[key] === undefined) {
                 row[key] = null;
             }
-
             if (typeof row[key] === "string") {
                 row[key] = row[key].replace(/[\t\n\r\f\v]/g, "");
                 row[key] = row[key].trim();
-
                 if (row[key] === "") {
                     row[key] = null;
                 }
             }
-
-
         }
-
         return row;
     }
 
-    async list(data) {
+    async list(data){
         let out = [];
         const $ = cheerio.load(data);
 
@@ -69,7 +100,7 @@ export class Parser extends base {
             if (cols.length < 2) continue;
             const record = this.createRecord($, cols, headerNames);
             out.push(record);
-            console.log(JSON.stringify(record, null, 2))
+            //- console.log(JSON.stringify(record, null, 2))
         }
         return out;
     }
