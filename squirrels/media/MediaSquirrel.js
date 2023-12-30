@@ -34,7 +34,9 @@ export default class MediaSquirrel extends Squirrel {
         const url = new URL(`${config.apiServer}${config.targetEndpoint}`);
         url.searchParams.append('limit', config.limit);
         console.log('Media Squirrel: getting targets', url)
-        const res = await this._xhttp.get(url.href, {timeout: config.timeout});
+        const res = await this._xhttp.get(url.href, {
+            timeout: config.timeout
+        });
         console.log(`Media Squirrel: received ${res?.data?.media?.length ?? 0} targets`)
         return res?.data
     }
@@ -66,12 +68,7 @@ export default class MediaSquirrel extends Squirrel {
 
                 const headers = {
                     'Authorization': 'Bearer ' + task?.token,
-                    'Connection': 'keep-alive',
-                    'Cache-Control': 'no-cache',
-                    'Transfer-Encoding': 'chunked',
-                    'Accept': 'application/json',
-                    'Content-type': `multipart/form-data; boundary=${form.getBoundary()}`,
-                    'User-Agent': 'Squirrel/1.0.0',
+                    ...form.getHeaders(),
                 }
 
                 // Send file to API
@@ -88,7 +85,11 @@ export default class MediaSquirrel extends Squirrel {
                     response.on('data', chunk => {
                         body += chunk.toString()
                     });
+                    response.on('error', error => {
+                        reject(error)
+                    });
                     response.on('end', () => {
+                        console.log(body);
                         resolve(JSON.parse(body))
                     });
                     response.resume();

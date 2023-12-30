@@ -47,7 +47,7 @@ export class MissingPersonsSquirrel extends Squirrel
         task.data.missing = missing
 
         const res = await xhttp.post(url.href, task, {})
-            .catch(err=>console.log('error posting', Object.keys(task), task.token))
+            .catch(err=>console.log('error posting', err))
 
         if (res?.statusCode < 200 || res?.statusCode > 299) {
             await delay(this.config.delayRange.min)

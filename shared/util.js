@@ -52,9 +52,7 @@ export const streamToApi = async (target, endpoint, data = {}, token = null) => 
 
     const headers = {
         'Connection': 'keep-alive',
-        'Cache-Control': 'no-cache',
         'Transfer-Encoding': 'chunked',
-        'Accept': 'application/json',
         'Content-type': `multipart/form-data; boundary=${form.getBoundary()}`,
         'User-Agent': 'Squirrel/1.0.0',
     }
@@ -63,8 +61,8 @@ export const streamToApi = async (target, endpoint, data = {}, token = null) => 
 
     return new Promise((resolve, reject) => {
         // Initiate download
-        https.get(target_url.href, res => {
-            form.append('file', res); // file stream
+        https.get(target_url.href, file_response => {
+            form.append('file', file_response); // file stream
 
             // Send file to API
             form.submit(
@@ -79,6 +77,10 @@ export const streamToApi = async (target, endpoint, data = {}, token = null) => 
                 if (!res) return reject('No response from server?');
                 res.on('data', chunk => {
                     out += chunk.toString()
+                });
+                res.on('error', err => {
+                   console.log(err)
+                   console.log(form.getHeaders())
                 });
                 res.on('end', () => {
                     resolve(JSON.parse(out))

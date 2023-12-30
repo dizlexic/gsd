@@ -52,6 +52,7 @@ export class Parser extends base {
             }
 
             const text = $(element[index])?.text()?.trim() ?? null;
+
             record[name] = text.length ? text : null;
         }
 
@@ -79,6 +80,11 @@ export class Parser extends base {
                 if (row[key] === "") {
                     row[key] = null;
                 }
+            }
+
+            if (key === 'type' && row[key] === null) {
+                row[key] = 'Unknown';
+
             }
         }
         return row;
