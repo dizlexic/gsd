@@ -20,6 +20,7 @@
     "redis": "^4.6.11",
     "request": "^2.88.2",
     "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "util.promisify": "^1.1.2",
     "uuid": "^9.0.1"
   },

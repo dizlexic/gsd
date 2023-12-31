@@ -26,6 +26,9 @@ export const config = {
         out_channel: process.env?.REDIS_OUT_CHANNEL,
     },
 
+    socket_url: process.env?.SOCKET_URL,
+    socket_port: process.env?.SOCKET_PORT,
+
     env: env.parsed,
 }
 
