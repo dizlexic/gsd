@@ -1,4 +1,5 @@
 import FormData from 'form-data';
+import http from 'http';
 import https from 'https';
 
 /**
@@ -7,7 +8,7 @@ import https from 'https';
  * @param max
  * @returns {number}
  */
-export const randomInRange = (min, max) => {
+export function randomInRange (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
@@ -16,7 +17,7 @@ export const randomInRange = (min, max) => {
  * @param ms
  * @returns {Promise<void>}
  */
-export const delay = async (ms) => {
+export async function delay (ms) {
     console.log(`Delaying for ${ms}ms`);
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -27,8 +28,8 @@ export const delay = async (ms) => {
  * @param max
  * @returns {Promise<void>}
  */
-export const delayRandom = async (min, max) => {
-    return await delay(randomInRange(min, max));
+export function delayRandom (min, max) {
+    return delay(randomInRange(min, max));
 };
 
 
@@ -122,13 +123,15 @@ export const clearTempFolder = async () => {
  * @param token
  * @returns {Promise<boolean>}
  */
-export const sendHeartBeat = async (to, data, token = null) => {
+export async function sendHeartBeat (to, data, token = null) {
     const target = new URL(to);
-    const req_method = await import(target.protocol === 'https:' ? 'https' : 'http');
+    const reqModule = target.protocol === 'https:' ? https : http;
 
     const options = {
-        method: 'GET', headers: {
-            'Content-Type': 'application/json', 'User-Agent': 'Squirrel/1.0.0',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Squirrel/1.0.0',
         },
     };
 
@@ -136,12 +139,10 @@ export const sendHeartBeat = async (to, data, token = null) => {
 
     return new Promise((resolve) => {
         try {
-            req_method.request(target, options, (res, err) => {
-                if (err) resolve(false);
-                res.on('close', () => {
-                    resolve(true);
-                });
-            });
+            reqModule.request(target, options, (res, err) => {
+                if (err) return resolve(false);
+                res.on('close', () => resolve(true));
+            })
         } catch (e) {
             resolve(false);
         }

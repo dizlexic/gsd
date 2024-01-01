@@ -1,35 +1,32 @@
-import * as dotenv from 'dotenv';
 
-export const env = dotenv.config({
-    path: './.env',
-});
+const { env } = process
+
+// default to dev environment if not specified
+env.NODE_ENV ||= 'development'
 
 export const config = {
-    dev_mode: (() => {
-        const is_prod = process.env.NODE_ENV !== 'production' || process.env.NODE_ENV !== 'staging';
-        const is_dev_mode = process.env?.DEV_MODE === 'true';
-        return is_prod && is_dev_mode;
-    })(),
+    dev_mode: env.DEV_MODE === 'true' || env.NODE_ENV.startsWith('dev'),
 
-    url: process.env?.API_URL,
-    port: process.env?.API_PORT ?? 80,
+    url: env.API_URL,
+    port: env.API_PORT ?? 80,
 
     headers: {
-        'Content-Type': 'application/json', 'User-Agent': 'Squirrel/1.0.0',
+        'Content-Type': 'application/json',
+        'User-Agent': 'Squirrel/1.0.0',
     },
 
     redis: {
-        host: process.env?.REDIS_HOST,
-        port: process.env?.REDIS_PORT,
-        password: process.env?.REDIS_PASSWORD,
-        in_channel: process.env?.REDIS_IN_CHANNEL,
-        out_channel: process.env?.REDIS_OUT_CHANNEL,
+        host: env.REDIS_HOST,
+        port: env.REDIS_PORT,
+        password: env.REDIS_PASSWORD,
+        in_channel: env.REDIS_IN_CHANNEL,
+        out_channel: env.REDIS_OUT_CHANNEL,
     },
 
-    socket_url: process.env?.SOCKET_URL,
-    socket_port: process.env?.SOCKET_PORT,
+    socket_url: env.SOCKET_URL,
+    socket_port: env.SOCKET_PORT,
 
-    env: env.parsed,
+    env: env,
 }
 
 export default config;
