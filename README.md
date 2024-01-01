@@ -5,7 +5,7 @@
 Grand Squirrel Dispatch is a simple node system for taking events from a 
 redis queue performing tasks and dispatching the results to a webhook.
 
-> this project was made to work with [Missing Squirrels]().
+> this project was made to work with [Missing Squirrels](https://github.com/dizlexic/missing-squrriels).
 
 ### Project requirements
 
