@@ -16,17 +16,16 @@ if (config.redis.password) {
 const client = createClient(opts);
 
 // Subscribe to the in channel
-client.subscribe(config.redis.in_channel, (data) => {
-    const event = new DispatchedEvent(data);
-    return new Promise(async (resolve) => {
-        try {
-            await event.run().then(() => event.save());
-        } catch (e) {
-            console.log("Redis Client Subscribe Err", e);
-            resolve(false);
-        }
-        resolve(true);
-    });
+client.subscribe(config.redis.in_channel, async (data) => {
+    try {
+        const event = new DispatchedEvent(data)
+        await event.run()
+        await event.save()
+    } catch (e) {
+        console.log("Redis Client Subscribe Err", e);
+        return false
+    }
+    return true
 });
 
 // Setup error update handler
